@@ -1,53 +1,77 @@
-const container = document.querySelector('.container');
-const resizeButton = document.getElementById('resize-button');
 const colorPicker = document.getElementById('color-picker');
-const clearButton = document.getElementById('clear-button');
-let currentColor = 'black';
+const colorModeBtn = document.getElementById('color-mode');
+const rainbowModeBtn = document.getElementById('rainbow-mode');
+const eraserModeBtn = document.getElementById('eraser-mode');
+const clearBtn = document.getElementById('clear');
+const grid = document.querySelector('.grid');
 
-function createGrid(size) {
-    container.innerHTML = '';
-    container.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
-    container.style.gridTemplateRows = `repeat(${size}, 1fr)`;
+let currentColor = colorPicker.value;
+let currentMode = 'color';
 
-    for (let i = 0; i < size * size; i++) {
-        const cell = document.createElement('div');
-        cell.classList.add('cell');
-        container.appendChild(cell);
-    }
+function setColor(e) {
+  currentColor = e.target.value;
 }
 
-function draw(event) {
-    if (event.target.classList.contains('cell')) {
-        event.target.style.backgroundColor = currentColor;
-    }
-}
-
-function resizeGrid() {
-    let size = prompt('Enter the number of squares per side (maximum 100):');
-    size = parseInt(size);
-
-    if (isNaN(size) || size <= 0 || size > 100) {
-        alert('Invalid input. Please enter a number between 1 and 100.');
-        return;
-    }
-
-    createGrid(size);
+function setMode(mode) {
+  currentMode = mode;
+  if (mode === 'color') {
+    colorModeBtn.classList.add('active');
+    rainbowModeBtn.classList.remove('active');
+    eraserModeBtn.classList.remove('active');
+  } else if (mode === 'rainbow') {
+    colorModeBtn.classList.remove('active');
+    rainbowModeBtn.classList.add('active');
+    eraserModeBtn.classList.remove('active');
+  } else if (mode === 'eraser') {
+    colorModeBtn.classList.remove('active');
+    rainbowModeBtn.classList.remove('active');
+    eraserModeBtn.classList.add('active');
+  }
 }
 
 function clearGrid() {
-    const cells = document.querySelectorAll('.cell');
-    cells.forEach(cell => {
-        cell.style.backgroundColor = 'white';
-    });
+  grid.innerHTML = '';
+  createGrid();
 }
 
-function updateColor() {
-    currentColor = colorPicker.value;
+function createGrid() {
+  const size = 16;
+  grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+  
+  for (let i = 0; i < size * size; i++) {
+    const cell = document.createElement('div');
+    cell.addEventListener('mouseover', draw);
+    grid.appendChild(cell);
+  }
 }
 
-resizeButton.addEventListener('click', resizeGrid);
-container.addEventListener('mouseover', draw);
-clearButton.addEventListener('click', clearGrid);
-colorPicker.addEventListener('input', updateColor);
+function draw(e) {
+  if (currentMode === 'color') {
+    e.target.style.backgroundColor = currentColor;
+  } else if (currentMode === 'rainbow') {
+    const randomColor = getRandomColor();
+    e.target.style.backgroundColor = randomColor;
+  } else if (currentMode === 'eraser') {
+    e.target.style.backgroundColor = '';
+  }
+}
 
-createGrid(16);
+function getRandomColor() {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+
+  return color;
+}
+
+colorPicker.addEventListener('input', setColor);
+colorModeBtn.addEventListener('click', () => setMode('color'));
+rainbowModeBtn.addEventListener('click', () => setMode('rainbow'));
+eraserModeBtn.addEventListener('click', () => setMode('eraser'));
+clearBtn.addEventListener('click', clearGrid);
+
+createGrid();
+setMode('color');

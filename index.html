@@ -1,17 +1,33 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Etch-A-Sketch</title>
     <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="controls">
-        <button id="resize-button">Resize Grid</button>
-        <input type="color" id="color-picker">
-        <button id="clear-button">Clear Grid</button>
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <header class="header">
+      <h1>Etch-A-Sketch</h1>
+    </header>
+    <div class="container">
+      <div class="controls">
+        <input type="color" id="color-picker" value="#000000">
+        <button id="color-mode">Color Mode</button>
+        <button id="rainbow-mode">Rainbow Mode</button>
+        <button id="eraser-mode">Eraser</button>
+        <button id="clear">Clear</button>
+      </div>
+      <div class="grid"></div>
     </div>
-    <div class="container"></div>
-    <script src="script.js"></script>
-</body>
+    <footer class="footer">
+      <p>&copy; 2023 Etch-A-Sketch. All rights reserved.</p>
+      <a href="https://github.com/yourusername" target="_blank">
+        <i class="fab fa-github"></i>
+      </a>
+    </footer>
+  </body>
 </html>
+
 
