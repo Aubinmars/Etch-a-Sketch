@@ -1,26 +1,25 @@
 const container = document.querySelector('.container');
 const resizeButton = document.getElementById('resize-button');
+const colorPicker = document.getElementById('color-picker');
+const clearButton = document.getElementById('clear-button');
+let currentColor = 'black';
 
 function createGrid(size) {
-    while (container.firstChild) {
-        container.firstChild.remove();
-    }
+    container.innerHTML = '';
+    container.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+    container.style.gridTemplateRows = `repeat(${size}, 1fr)`;
 
     for (let i = 0; i < size * size; i++) {
-        const square = document.createElement('div');
-        square.classList.add('square');
-        container.appendChild(square);
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        container.appendChild(cell);
     }
 }
 
-function hoverEffect(event) {
-    const square = event.target;
-    square.style.backgroundColor = 'black';
-}
-
-function removeColor(event) {
-    const square = event.target;
-    square.style.backgroundColor = '';
+function draw(event) {
+    if (event.target.classList.contains('cell')) {
+        event.target.style.backgroundColor = currentColor;
+    }
 }
 
 function resizeGrid() {
@@ -35,8 +34,20 @@ function resizeGrid() {
     createGrid(size);
 }
 
+function clearGrid() {
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach(cell => {
+        cell.style.backgroundColor = 'white';
+    });
+}
+
+function updateColor() {
+    currentColor = colorPicker.value;
+}
+
 resizeButton.addEventListener('click', resizeGrid);
-container.addEventListener('mouseover', hoverEffect);
-container.addEventListener('mouseout', removeColor);
+container.addEventListener('mouseover', draw);
+clearButton.addEventListener('click', clearGrid);
+colorPicker.addEventListener('input', updateColor);
 
 createGrid(16);
