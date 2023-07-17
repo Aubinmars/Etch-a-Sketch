@@ -1,77 +1,69 @@
-const colorPicker = document.getElementById('color-picker');
-const colorModeBtn = document.getElementById('color-mode');
-const rainbowModeBtn = document.getElementById('rainbow-mode');
-const eraserModeBtn = document.getElementById('eraser-mode');
-const clearBtn = document.getElementById('clear');
-const grid = document.querySelector('.grid');
+const colorPicker = document.getElementById("colorPicker");
+const colorModeBtn = document.getElementById("colorModeBtn");
+const gradientModeBtn = document.getElementById("gradientModeBtn");
+const resetBtn = document.getElementById("resetBtn");
+const gridSizeInput = document.getElementById("gridSizeInput");
+const resizeBtn = document.getElementById("resizeBtn");
+const grid = document.getElementById("grid");
 
-let currentColor = colorPicker.value;
-let currentMode = 'color';
+let currentColor = "#000000";
+let currentMode = "color";
+let gridSize = 16;
 
-function setColor(e) {
-  currentColor = e.target.value;
-}
-
-function setMode(mode) {
-  currentMode = mode;
-  if (mode === 'color') {
-    colorModeBtn.classList.add('active');
-    rainbowModeBtn.classList.remove('active');
-    eraserModeBtn.classList.remove('active');
-  } else if (mode === 'rainbow') {
-    colorModeBtn.classList.remove('active');
-    rainbowModeBtn.classList.add('active');
-    eraserModeBtn.classList.remove('active');
-  } else if (mode === 'eraser') {
-    colorModeBtn.classList.remove('active');
-    rainbowModeBtn.classList.remove('active');
-    eraserModeBtn.classList.add('active');
-  }
-}
-
-function clearGrid() {
-  grid.innerHTML = '';
-  createGrid();
-}
-
-function createGrid() {
-  const size = 16;
+function createGrid(size) {
+  grid.innerHTML = "";
   grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
-  
+
   for (let i = 0; i < size * size; i++) {
-    const cell = document.createElement('div');
-    cell.addEventListener('mouseover', draw);
+    const cell = document.createElement("div");
+    cell.classList.add("cell");
+    cell.addEventListener("mouseover", handleCellMouseOver);
     grid.appendChild(cell);
   }
 }
 
-function draw(e) {
-  if (currentMode === 'color') {
-    e.target.style.backgroundColor = currentColor;
-  } else if (currentMode === 'rainbow') {
-    const randomColor = getRandomColor();
-    e.target.style.backgroundColor = randomColor;
-  } else if (currentMode === 'eraser') {
-    e.target.style.backgroundColor = '';
+function handleColorPickerChange(event) {
+  currentColor = event.target.value;
+}
+
+function handleColorModeButtonClick() {
+  currentMode = "color";
+}
+
+function handleGradientModeButtonClick() {
+  currentMode = "gradient";
+}
+
+function handleResetButtonClick() {
+  Array.from(grid.children).forEach((cell) => {
+    cell.style.backgroundColor = "#fff";
+  });
+}
+
+function handleResizeButtonClick() {
+  const newSize = parseInt(gridSizeInput.value);
+  if (newSize > 0 && newSize <= 100) {
+    gridSize = newSize;
+    createGrid(gridSize);
   }
 }
 
-function getRandomColor() {
-  const letters = '0123456789ABCDEF';
-  let color = '#';
-
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
+function handleCellMouseOver(event) {
+  if (currentMode === "color") {
+    event.target.style.backgroundColor = currentColor;
+  } else if (currentMode === "gradient") {
+    const backgroundColor = event.target.style.backgroundColor;
+    const opacity = backgroundColor ? parseFloat(backgroundColor.slice(-4, -1)) : 0;
+    if (opacity < 1) {
+      event.target.style.backgroundColor = `rgba(0, 0, 0, ${opacity + 0.1})`;
+    }
   }
-
-  return color;
 }
 
-colorPicker.addEventListener('input', setColor);
-colorModeBtn.addEventListener('click', () => setMode('color'));
-rainbowModeBtn.addEventListener('click', () => setMode('rainbow'));
-eraserModeBtn.addEventListener('click', () => setMode('eraser'));
-clearBtn.addEventListener('click', clearGrid);
+colorPicker.addEventListener("input", handleColorPickerChange);
+colorModeBtn.addEventListener("click", handleColorModeButtonClick);
+gradientModeBtn.addEventListener("click", handleGradientModeButtonClick);
+resetBtn.addEventListener("click", handleResetButtonClick);
+resizeBtn.addEventListener("click", handleResizeButtonClick);
 
-createGrid();
-setMode('color');
+createGrid(gridSize);
