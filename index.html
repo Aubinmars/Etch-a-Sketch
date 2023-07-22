@@ -14,11 +14,13 @@
         <h6>Select the size</h6>
         <button id="popup" class="btn btn-primary">Select</button>
     </div>
+    <p id="message"></p>
+    <p id="draw"></p>
     <div class="board"></div>
     <div class="footer">
-        <button id="resetBtn" class="btn btn-secondary">Reset</button>
-        <button id="blackBtn" class="btn btn-dark">Black</button>
-        <button id="rgbBtn" class="btn btn-success">RGB</button>
+        <button id="resetBtn" class="btn btn-secondary"  onclick="resetBoard()">Reset</button>
+        <button id="blackBtn" class="btn btn-dark"  onclick="setColor('black')">Black</button>
+        <button id="rgbBtn" class="btn btn-success"onclick="setColor('rgb')">RGB</button>
     </div>
     <footer>
         <p>&copy; Mars in The 2023 Odin Project</p>
